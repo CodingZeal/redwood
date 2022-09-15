@@ -1,20 +1,32 @@
 import envinfo from 'envinfo'
 import execa from 'execa'
 
+import { ERRORS } from './constants'
+
 interface SystemInformation {
-  Virtualization: string[]
-  System: string[]
+  Virtualization: {
+    Docker?: {
+      version: string
+      path: string
+    }
+  }
+  System: {
+    OS: string
+  }
 }
 
-export async function meetsDockerRequirements() {
-  const sysInfo = await _introspectSystem()
-  const hasDocker = _hasDocker(sysInfo)
-  const isRunning = await _isDockerRunning()
-  console.log({ isRunning })
-  return hasDocker
+export async function canRunDocker() {
+  try {
+    const sysInfo = await _systemInfo()
+    const hasDocker = _hasDocker(sysInfo)
+    const isDockerRunning = await _isDockerRunning(sysInfo)
+    return isDockerRunning && hasDocker
+  } catch (err) {
+    return false
+  }
 }
 
-async function _introspectSystem(): Promise<SystemInformation> {
+async function _systemInfo(): Promise<SystemInformation> {
   const info = await envinfo.run(
     {
       System: ['OS'],
@@ -22,27 +34,35 @@ async function _introspectSystem(): Promise<SystemInformation> {
     },
     {
       json: true,
-      showNotFound: false,
     }
   )
+
   return JSON.parse(info)
 }
 
-function _hasDocker({ Virtualization }: SystemInformation) {
+function _hasDocker({ Virtualization = {} }: SystemInformation) {
   return Object.keys(Virtualization).includes('Docker')
 }
 
-async function _isDockerRunning() {
-
+async function _isDockerRunning({
+  System,
+}: SystemInformation): Promise<boolean> {
+  if (System.OS.split(' ').includes('Windows')) {
+    throw new Error(ERRORS.SYSTEM_WINDOWS)
+  }
+  return (await _pingDockerSocketLinux()) === 'OK'
 }
 
-async function pingDockerSocketLinux({ System }: SystemInformation) {
-  // curl -s --unix-socket /var/run/docker.sock http/_ping
-  const { stdout } = await execa('curl', [
-    '-s',
-    '--unix-socket',
-    '/var/run/docker.sock',
-    'http/_ping',
-  ])
-  return stdout
+async function _pingDockerSocketLinux(): Promise<string> {
+  try {
+    const { stdout } = await execa('curl', [
+      '-s',
+      '--unix-socket',
+      '/var/run/docker.sock',
+      'http/_ping',
+    ])
+    return stdout
+  } catch (err) {
+    return 'ERROR'
+  }
 }

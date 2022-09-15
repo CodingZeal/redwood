@@ -22,6 +22,7 @@
     "node_modules",
     "**/__tests__",
     "**/__mocks__",
-    "**/*.test.*"
+    "**/*.test.*",
+    "packages/cli/src/jsconfig.json"
   ]
 }
