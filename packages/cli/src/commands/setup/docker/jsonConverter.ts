@@ -1,8 +1,8 @@
 export function convertJson(data: any) {
   let indent = ''
   const typeMethods: Record<any, any> = {
-    undefined: () => '',
-    null: () => '',
+    undefined: () => null,
+    null: () => null,
     number: (val: number) => val,
     boolean: (val: boolean) => (val ? 'true' : 'false'),
     string: (val: string) => val,
@@ -12,7 +12,7 @@ export function convertJson(data: any) {
         .map((v) => `\n${indent}- ${typeMethods[_matchType(v)](v, true)}`)
         .join('')
       indent = _decreaseIndent(indent)
-      return output
+      return output.trimEnd()
     },
     object: (
       x: Record<string, unknown>,
@@ -25,24 +25,19 @@ export function convertJson(data: any) {
         indent = _increaseIndent(indent)
       }
 
-      // Object.keys(x || {}).forEach((k, i) => {
-      //   const val = x[k]
+      const isFirstArray = (i: number) => inArray && i === 0
 
-      //   if (_matchType(val) === 'undefined') {
-      //     return
-      //   }
-
-      //   if (!(inArray && i === 0)) {
-      //     output += '\n' + indent
-      //   }
-
-      //   output += k + ': ' + typeMethods[_matchType(val)](val)
-      // })
-      const o = Object.entries(x).map(([k, v]) => {
-        
+      Object.entries(x || {}).map(([k, v], i) => {
+        if (!isFirstArray(i)) {
+          output += '\n' + indent
+        }
+        const nextType = _matchType(v)
+        const thingNeedsBlank = nextType !== 'string' && nextType !== 'boolean'
+        const m = thingNeedsBlank ? ':' : ': '
+        output += k + m + typeMethods[_matchType(v)](v)
       })
       indent = _decreaseIndent(indent)
-      return output
+      return output.trimEnd()
     },
     function: () => {},
   }
