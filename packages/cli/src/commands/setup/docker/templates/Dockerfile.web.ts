@@ -15,4 +15,3 @@ COPY ./redwood.toml ./.env ./graphql.config.js .
 COPY ./docker/entrypoint.web.sh ./docker/
 
 ENTRYPOINT ./docker/entrypoint.web.sh
-`

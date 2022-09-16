@@ -1,0 +1,14 @@
+str: "foobarbaz"
+obj1: 
+  key1: 
+    bar1: "foo"
+    bar2: 
+      0: "one"
+      1: "two"
+      2: "three"
+  key2: "value2"
+obj2: 
+  key1: "bar"
+arr: 
+  0: "item1"
+  1: "item2"

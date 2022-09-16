@@ -3,13 +3,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "dist"
   },
   "include": ["src"],
   "references": [
     { "path": "../internal" },
     { "path": "../structure" },
     { "path": "../prerender" },
-    { "path": "../api-server" },
+    { "path": "../api-server" }
   ]
 }

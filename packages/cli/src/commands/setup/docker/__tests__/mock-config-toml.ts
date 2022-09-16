@@ -1,10 +1,12 @@
+import { TargetEnum } from '@redwoodjs/internal/dist/config'
+
 export const MOCK_REDWOOD_TOML = {
   web: {
     title: 'Redwood App',
     host: 'localhost',
     port: 8910,
     path: './web',
-    target: 'browser',
+    target: 'browser' as TargetEnum.BROWSER,
     apiUrl: '/.redwood/functions',
     fastRefresh: true,
     a11y: true,
@@ -16,7 +18,7 @@ export const MOCK_REDWOOD_TOML = {
     host: 'localhost',
     port: 8911,
     path: './api',
-    target: 'node',
+    target: 'node' as TargetEnum.NODE,
     schemaPath: './api/db/schema.prisma',
     serverConfig: './api/server.config.js',
     debugPort: 18911,
