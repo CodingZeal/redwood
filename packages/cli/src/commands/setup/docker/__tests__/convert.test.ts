@@ -1,6 +1,8 @@
-import { convertJson } from '../converter'
-import fs from 'fs-extra'
-import path from 'path'
+import { convert } from '../convert'
+
+// import fs from 'fs-extra'
+// import path from 'path'
+
 const MOCK_INPUT = {
   str: 'foobarbaz',
   obj1: {
@@ -19,16 +21,18 @@ const MOCK_INPUT = {
 }
 
 const EXPECTED = `str: foobarbaz
-obj:
-  key:
-    bar: foo
-    thing:
+obj1:
+  key1:
+    bar1: foo
+    bar2:
       - one
       - two
       - three
+        one: two
+        keyOne: twotwo
   key2: value2
 obj2:
-  foo: bar
+  key1: bar
 arr:
   - item1
   - item2
@@ -36,10 +40,10 @@ arr:
 
 describe('json to yml converter', () => {
   it('converts json to yml', () => {
-    const actual = convertJson(MOCK_INPUT)
-    console.log(actual)
+    const actual = convert(MOCK_INPUT)
+    // console.log(actual)
     // const p = path.join(__dirname, 'foobar')
     // fs.writeFileSync(p, actual)
-    // expect(actual).toBe(EXPECTED)
+    expect(actual).toBe(EXPECTED)
   })
 })
