@@ -3,3 +3,8 @@ declare namespace NodeJS {
     __dirname: string
   }
 }
+
+export enum Database {
+  SQLITE,
+  POSTGRES,
+}

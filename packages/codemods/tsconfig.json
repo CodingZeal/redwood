@@ -3,7 +3,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "src",
-    "emitDeclarationOnly": false,
     "noEmit": true
   },
   "include": ["src", "./testUtils.d.ts"],

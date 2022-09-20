@@ -15,7 +15,6 @@ Enable strict mode by setting `strict` to true in `web/tsconfig.json` and `api/t
 ```json title="web/tsconfig.json, api/tsconfig.json, scripts/tsconfig.json"
 {
   "compilerOptions": {
-    "noEmit": true,
     "allowJs": true,
     // highlight-next-line
     "strict": true,

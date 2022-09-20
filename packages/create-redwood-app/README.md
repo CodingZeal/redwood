@@ -1,5 +1,8 @@
 [![RedwoodJS](https://raw.githubusercontent.com/redwoodjs/redwoodjs.com/main/publish/images/mark-logo-cover.png)](https://redwoodjs.com)
 
+LEAVING NOTE HERE FOR CONFIG FIX:
+https://stackoverflow.com/questions/60563961/option-noemit-cannot-be-specified-with-option-incremental
+
 <!-- prettier-ignore-start -->
 <p align="center">
   <a aria-label="Start the Tutorial" href="https://redwoodjs.com/docs/tutorial">
