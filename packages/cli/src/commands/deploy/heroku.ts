@@ -42,8 +42,9 @@ export const HEROKU_OPTIONS: { [keyof: string]: yargs.Options } = {
   },
 }
 
-export const builder = function (yargs: yargs.Argv) {
+export const builder = function (yargs: yargs.Argv): void {
   yargs.options(HEROKU_OPTIONS)
+  return
 }
 
 type IHerokuStep = (ctx: IHerokuContext) => Promise<IHerokuContext>
@@ -56,14 +57,17 @@ const HEROKU_SETUP_STEPS: IHerokuStep[] = [
   addendumStep,
 ]
 
-async function _runSteps(arr: IHerokuStep[], input: IHerokuContext) {
+async function _runSteps(
+  arr: IHerokuStep[],
+  input: IHerokuContext
+): Promise<IHerokuContext> {
   return arr.reduce(
     (promise: Promise<IHerokuContext>, fn: IHerokuStep) => promise.then(fn),
     Promise.resolve(input)
   )
 }
 
-export const handler = async (yargs: IYargs) => {
+export const handler = async (yargs: IYargs): Promise<void> => {
   try {
     writeStdout(
       createBoxen(colors.warning('Starting engines...'), '🚀 Heroku Deploy 🚀')
@@ -71,6 +75,7 @@ export const handler = async (yargs: IYargs) => {
     const ctx = await createContextStep(yargs)
     await _runSteps(HEROKU_SETUP_STEPS, ctx)
     writeStdout(createBoxen('All done!', '🚀'))
+    return
   } catch (err: any) {
     console.error(colors.error(err.message))
     process.exit(1)

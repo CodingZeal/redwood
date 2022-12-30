@@ -18,7 +18,13 @@ const DEFAULT_EXECA_OPTS: execa.Options = {
   stripFinalNewline: true,
 }
 
-export function buildSpawner(cwd: string, debug: boolean | undefined) {
+export function buildSpawner(
+  cwd: string,
+  debug: boolean | undefined
+): (
+  command: string,
+  opts?: ISpawnConfig
+) => Promise<string | ExecaReturnValue> {
   return async function (command: string, overrides = {}) {
     return await spawn(command, {
       debug,
@@ -51,7 +57,14 @@ export async function spawn(
   }
 }
 
-export function createLogger(debug = false) {
+interface ILogger {
+  log: (...args: any) => void
+  info: (msg: string) => void
+  debug: (msg: string) => void
+  error: (msg: string) => void
+}
+
+export function createLogger(debug = false): ILogger {
   return {
     log: (...args: any) => console.log(...args),
     info: (msg: string) => console.info(`🔍 ${colors.green(msg)}`),
@@ -60,12 +73,14 @@ export function createLogger(debug = false) {
   }
 }
 
-export function writeStdout(output: string) {
+export function writeStdout(output: string): void {
   process.stdout.write(output)
+  return
 }
 
-export function clearStdout(output: string) {
+export function clearStdout(output: string): void {
   writeStdout(`\x1Bc${output}`)
+  return
 }
 
 export function sleep(ms: number) {

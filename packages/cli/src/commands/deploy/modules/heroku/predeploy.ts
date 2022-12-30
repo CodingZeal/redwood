@@ -24,13 +24,14 @@ export async function predeployStep(
   return ctx
 }
 
-function _copyTemplates(ctx: IHerokuContext) {
+function _copyTemplates(ctx: IHerokuContext): void {
   _copyConfigTemplates(ctx)
   _copyScriptTemplates(ctx)
   _copyHerokuSh(ctx)
+  return
 }
 
-function _copyConfigTemplates(ctx: IHerokuContext) {
+function _copyConfigTemplates(ctx: IHerokuContext): void {
   const templatesPath = path.join(__dirname, 'templates')
   if (_shouldRun(ctx, PredeploySteps.COPY_CONFIG_TEMPLATES)) {
     const configTemplatesDir = path.join(templatesPath, 'config')
@@ -45,11 +46,11 @@ function _copyConfigTemplates(ctx: IHerokuContext) {
     const procfileDest = path.join(ctx.projectPath, 'Procfile')
     fs.copySync(procfileSrc, procfileDest)
     clearStdout(createBoxen(colors.yellow('Copied config templates'), '⚙️'))
-    return
   }
+  return
 }
 
-function _copyScriptTemplates(ctx: IHerokuContext) {
+function _copyScriptTemplates(ctx: IHerokuContext): void {
   const templatesPath = path.join(__dirname, 'templates')
   if (_shouldRun(ctx, PredeploySteps.COPY_SCRIPTS_TEMPLATES)) {
     const scriptTemplatesDir = path.join(templatesPath, 'scripts')
@@ -61,13 +62,13 @@ function _copyScriptTemplates(ctx: IHerokuContext) {
     }
     _makeScriptsExecutable(ctx)
     clearStdout(createBoxen(colors.yellow('Copied script templates'), '📝'))
-    return
   }
+  return
 }
 
 // if they selected to choose the steps individually
 // lets give them a reference script for deployment
-function _copyHerokuSh(ctx: IHerokuContext) {
+function _copyHerokuSh(ctx: IHerokuContext): void {
   const anyStepDisabled = isAnyStepDisabled(ctx)
   if (anyStepDisabled) {
     const templatesPath = path.join(__dirname, 'templates')
@@ -76,9 +77,10 @@ function _copyHerokuSh(ctx: IHerokuContext) {
     fs.copySync(herokuShSrc, herokuShDest)
     fs.chmodSync(herokuShDest, '775')
   }
+  return
 }
 
-async function _generateHome(ctx: IHerokuContext) {
+async function _generateHome(ctx: IHerokuContext): Promise<void> {
   try {
     const shouldGenerate = _shouldRun(ctx, PredeploySteps.GENERATE_HOME_ROUTE)
 
@@ -86,6 +88,7 @@ async function _generateHome(ctx: IHerokuContext) {
       await ctx.spawn(`yarn rw g page home /`)
       clearStdout(createBoxen(colors.yellow('Generated home page'), '🏠'))
     }
+    return
   } catch (err) {
     clearStdout(
       createBoxen(
@@ -96,10 +99,11 @@ async function _generateHome(ctx: IHerokuContext) {
       )
     )
     await sleep(3000)
+    return
   }
 }
 
-function _makeScriptsExecutable(ctx: IHerokuContext) {
+function _makeScriptsExecutable(ctx: IHerokuContext): void {
   const entrypointPath = path.join(ctx.projectPath, 'scripts/entrypoint.sh')
   fs.chmodSync(entrypointPath, '775')
 
@@ -108,9 +112,13 @@ function _makeScriptsExecutable(ctx: IHerokuContext) {
 
   const postButildPath = path.join(ctx.projectPath, 'scripts/postbuild.sh')
   fs.chmodSync(postButildPath, '775')
+  return
 }
 
-async function _installModules(ctx: IHerokuContext, modules: string[]) {
+async function _installModules(
+  ctx: IHerokuContext,
+  modules: string[]
+): Promise<void> {
   try {
     const shouldInstall = _shouldRun(ctx, PredeploySteps.INSTALL_DEPS)
     if (shouldInstall) {
@@ -120,12 +128,13 @@ async function _installModules(ctx: IHerokuContext, modules: string[]) {
         createBoxen(colors.yellow('Installed required modules'), '🧱')
       )
     }
+    return
   } catch (err) {
     throw new Error(`Error installing required modules: ${err}`)
   }
 }
 
-function _addPackageJsonScripts(ctx: IHerokuContext) {
+function _addPackageJsonScripts(ctx: IHerokuContext): void {
   try {
     const shouldAdd = _shouldRun(ctx, PredeploySteps.UPDATE_PACKAGEJSON_SCRIPTS)
     if (shouldAdd) {
@@ -143,12 +152,13 @@ function _addPackageJsonScripts(ctx: IHerokuContext) {
       )
       clearStdout(createBoxen(colors.yellow('Added extra scripts'), '℞'))
     }
+    return
   } catch (err) {
     throw new Error(`Error adding build script: ${err}`)
   }
 }
 
-function _updatePrismaSchema(ctx: IHerokuContext) {
+function _updatePrismaSchema(ctx: IHerokuContext): void {
   try {
     const { projectPath, prereqs } = ctx
     const shouldUpdate = _shouldRun(ctx, PredeploySteps.SET_POSTGRES)
@@ -163,18 +173,20 @@ function _updatePrismaSchema(ctx: IHerokuContext) {
       fs.writeFileSync(schemaPath, replaced)
       clearStdout(createBoxen(colors.yellow('Added postgres provider'), '🐘'))
     }
+    return
   } catch (err) {
     throw new Error(`Error updating Prisma schema: ${err}`)
   }
 }
 
-async function _initGit(ctx: IHerokuContext) {
+async function _initGit(ctx: IHerokuContext): Promise<void> {
   if (!ctx.prereqs?.isGitRepo) {
     await ctx.spawn('git init')
   }
+  return
 }
 
-async function _gitAddAndCommit(ctx: IHerokuContext) {
+async function _gitAddAndCommit(ctx: IHerokuContext): Promise<void> {
   await ctx.spawn('git add .')
   await ctx.spawn(`git commit -m "Heroku deploy commit"`, {
     shell: true,
@@ -182,6 +194,7 @@ async function _gitAddAndCommit(ctx: IHerokuContext) {
   })
 
   clearStdout(createBoxen(colors.yellow('Git repo is ready'), '🤘🏽'))
+  return
 }
 
 export interface IPredeployChoices {

@@ -61,7 +61,6 @@ export async function pushStep(ctx: IHerokuContext): Promise<IHerokuContext> {
       )
     )
     await sleep(5000)
-    console.clear()
     await HerokuApi.push(ctx)
   }
   return ctx
