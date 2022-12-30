@@ -11,7 +11,8 @@ describe('message creation', () => {
     await addendumStep(MOCK_HEROKU_CTX)
     expect(HerokuApi.followLogs).toHaveBeenCalled()
   })
-  it('if any step has been disabled show manual finish message', async () => {
+
+  it('does not follow logs when manual steps have been set', async () => {
     await addendumStep({
       ...MOCK_HEROKU_CTX,
       predeploySteps: [

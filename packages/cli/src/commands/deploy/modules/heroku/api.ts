@@ -1,14 +1,7 @@
 import { IHerokuContext } from './ctx'
 
 export const HEROKU_ERRORS = {
-  MISSING_PROJECT_PATH: 'There was an issue finding the project path',
-  HANDLE_DELETE: 'No app name provided to delete.',
-  NO_SUPPORT: 'Only OSX is supported at this time',
-  NO_HEROKU: 'Heroku CLI not found',
-  IS_WINDOWS: 'Windows is not supported at this time',
-  NOT_LOGGED_IN: 'User is not logged in to Heroku',
   APP_CREATE_FAIL: 'Could not create app. Correct any errors and try again',
-  POSTGRES_NOT_CONFIGURED: 'Postgres is not configured for this app',
 }
 
 export class HerokuApi {

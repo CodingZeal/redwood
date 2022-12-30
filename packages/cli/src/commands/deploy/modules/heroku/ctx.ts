@@ -41,7 +41,7 @@ export interface IPrereqs {
   hasHomeRoute?: boolean
 }
 
-export const DEFAULT_PREREQS = {
+export const DEFAULT_PREREQS: IPrereqs = {
   isX64: true,
   isDarwin: true,
   isGitRepo: false,
@@ -130,14 +130,14 @@ function _isPackageJsonClean(projectPath: string): boolean {
   }
 }
 
-export function _loadPackageJson(projectPath: string) {
+export function _loadPackageJson(projectPath: string): any {
   const packageJsonPath = path.join(projectPath, 'package.json')
   const json = fs.readJsonSync(packageJsonPath, 'utf8')
   return json
 }
 
-function _alreadyHasScripts(packageJson: Record<string, unknown>) {
-  return packageJson.scripts && Object.keys(packageJson.scripts).length
+function _alreadyHasScripts(packageJson: Record<string, any>): boolean {
+  return packageJson?.scripts && Object.keys(packageJson.scripts).length
 }
 
 function _isPrismaConfigured(projectPath: string): boolean {
@@ -159,7 +159,7 @@ async function _isUniqueName(ctx: IHerokuContext): Promise<boolean> {
   }
 }
 
-function _isUnique(curName: string, json: Record<string, any>) {
+function _isUnique(curName: string, json: Record<string, any>): boolean {
   return !json.map((app: any) => app.name).includes(curName)
 }
 
@@ -170,6 +170,6 @@ function _hasHomeRoute(projectPath: string): boolean {
   return hasHomeRoute
 }
 
-export function isAnyStepDisabled(ctx: IHerokuContext) {
+export function isAnyStepDisabled(ctx: IHerokuContext): boolean {
   return ctx.predeploySteps.some((step) => !step.enabled)
 }

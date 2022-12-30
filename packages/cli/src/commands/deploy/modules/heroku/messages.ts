@@ -4,7 +4,7 @@ import { colors } from '../../../../lib'
 
 import { type IHerokuContext, type IPrereqs } from './ctx'
 
-export function createBoxen(message: string, title: string) {
+export function createBoxen(message: string, title: string): string {
   return boxen(message, {
     title,
     margin: { top: 1, right: 0, bottom: 1, left: 0 },

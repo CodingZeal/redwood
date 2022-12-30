@@ -45,29 +45,31 @@ export async function confirmationStep(
   throw new Error('Invalid choice')
 }
 
-function _quit() {
+function _quit(): void {
   writeStdout(
     createBoxen('No prob. Come back when you are ready!', 'Goodbye! 👋')
   )
   process.exit(0)
 }
 
-function _validateSystem({ prereqs }: IHerokuContext) {
+function _validateSystem({ prereqs }: IHerokuContext): void {
   if (!prereqs?.isDarwin) {
     writeStdout(
       createBoxen('Error', '😢 Only Macs are supported at this time.')
     )
     process.exit(0)
   }
+  return
 }
 
 async function _readyDialogs(
   appName: string,
   message: string,
   listOfActions: string
-) {
+): Promise<void> {
   writeStdout(createBoxen(message, 'Current status'))
   writeStdout(createBoxen(listOfActions, `📝 Changes to make for [${appName}]`))
+  return
 }
 
 async function _chooseRunPath(_ctx: IHerokuContext): Promise<string> {
